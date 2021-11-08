@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"log"
 	"reflect"
 )
 
@@ -109,7 +110,7 @@ var TypeMap = map[uint8]string{
 	TypeConstructed: "Constructed",
 }
 
-var Debug bool = false
+var Debug bool = true
 
 func PrintBytes(buf []byte, indent string) {
 	data_lines := make([]string, (len(buf)/30)+1)
@@ -191,8 +192,9 @@ func readBytes(reader io.Reader, buf []byte) error {
 func ReadPacket(reader io.Reader) (*Packet, error) {
 	buf := make([]byte, 2)
 
-	err := readBytes(reader, buf)
+	log.Println("----- local replaced asn1-ber dev version")
 
+	err := readBytes(reader, buf)
 	if err != nil {
 		return nil, err
 	}
@@ -248,6 +250,8 @@ func ReadPacket(reader io.Reader) (*Packet, error) {
 		for _, b := range buf {
 			fmt.Printf("%02X ", b)
 		}
+
+		fmt.Printf("\n")
 	}
 
 	p := DecodePacket(buf)
@@ -255,7 +259,7 @@ func ReadPacket(reader io.Reader) (*Packet, error) {
 	return p, nil
 }
 
-func DecodeString(data []byte) (string) {
+func DecodeString(data []byte) string {
 	return string(data)
 }
 
