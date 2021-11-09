@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"reflect"
 )
 
@@ -111,7 +110,7 @@ var TypeMap = map[uint8]string{
 	TypeConstructed: "Constructed",
 }
 
-var Debug bool = true
+var Debug bool = false
 
 func PrintBytes(buf []byte, indent string) {
 	data_lines := make([]string, (len(buf)/30)+1)
@@ -193,8 +192,6 @@ func readBytes(reader io.Reader, buf []byte) error {
 func ReadPacket(reader io.Reader) (*Packet, error) {
 	buf := make([]byte, 2)
 
-	log.Println("----- local replaced asn1-ber dev version")
-
 	err := readBytes(reader, buf)
 	if err != nil {
 		return nil, err
@@ -228,7 +225,7 @@ func ReadPacket(reader io.Reader) (*Packet, error) {
 		datalen = DecodeInteger(buf[2 : 2+a])
 
 		if Debug {
-			fmt.Printf("Read: a = %d  idx = %d  datalen = %d  len(buf) = %d", a, idx, datalen, len(buf))
+			fmt.Printf("Read: a = %d, idx = %d, datalen = %d, len(buf) = %d, buf = ", a, idx, datalen, len(buf))
 
 			for _, b := range buf {
 				fmt.Printf("%02X ", b)
@@ -246,7 +243,7 @@ func ReadPacket(reader io.Reader) (*Packet, error) {
 	}
 
 	if Debug {
-		fmt.Printf("Read: len( buf ) = %d  idx=%d datalen=%d idx+datalen=%d\n", len(buf), idx, datalen, idx+datalen)
+		fmt.Printf("Read: len(buf) = %d, idx = %d, datalen = %d, idx+datalen = %d, buf = ", len(buf), idx, datalen, idx+datalen)
 
 		for _, b := range buf {
 			fmt.Printf("%02X ", b)
@@ -328,9 +325,6 @@ func decodePacket(data []byte) (*Packet, []byte) {
 
 	datalen := DecodeInteger(data[1:2])
 	datapos := uint64(2)
-	if Debug {
-		fmt.Printf("decodePacket: datalen %d, datapos %d\n", datalen, datapos)
-	}
 
 	if datalen&128 != 0 {
 		datalen -= 128
