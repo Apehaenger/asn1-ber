@@ -193,6 +193,7 @@ func ReadPacket(reader io.Reader) (*Packet, error) {
 	buf := make([]byte, 2)
 
 	err := readBytes(reader, buf)
+
 	if err != nil {
 		return nil, err
 	}
